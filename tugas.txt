@@ -1,0 +1,98 @@
+CREATE DATABASE tugas_database_kapita;
+
+CREATE TABLE Transaction(
+	Id varchar(5) NOT NULL PRIMARY KEY,
+    OrderDate date
+)
+
+CREATE TABLE Supplier(
+    Id varchar(5) NOT NULL PRIMARY KEY,
+    Name varchar(50),
+    JoinDate date
+)
+
+
+CREATE TABLE TransactionItem (
+    Id int NOT NULL PRIMARY KEY,
+    Quantity int,
+    Transaction_Id varchar(4),
+    Item_Id varchar(4),
+    FOREIGN KEY (Transaction_Id) REFERENCES transactions(Id),
+    FOREIGN KEY (Item_Id) REFERENCES item(Id)
+)
+
+CREATE TABLE Item( 
+	Id varchar(5) NOT NULL PRIMARY KEY, 
+	Name varchar(50), 
+	Price int, 
+	Stock int, 
+	Supplier_Id varchar(4),
+	FOREIGN KEY (Supplier_Id) REFERENCES supplier(Id)
+)
+
+INSERT INTO item VALUES
+('B01','Developer .Net','6000000','11','SP03'),
+('B02','Developer Java','6000000','10','SP02'),
+('B03','Developer C#','5500000','10','SP04'),
+('B04','Developer Python','5500000','10','SP02')
+
+INSERT INTO transaction_item VALUES
+('01','10','101','B01'),
+('02','5','101','B02'),
+('03','4','102','B04'),
+('04','5','103','B03'),
+('05','10','104','B04'),
+('06','3','105','B02')
+
+SELECT * FROM item
+
+
+SELECT transactionitem.Transaction_Id AS 'Nomor Faktur',
+item.Name AS 'Barang', transaction_item.Quantity AS 'Quantity',
+FORMAT (item.Price, 2) AS 'Harga', FORMAT
+(transactionitem.Quantity * item.Price, 2) AS 'Total Harga'
+FROM transactionitem
+INNER JOIN item ON item.Id=transactionitem.Item_Id
+
+SELECT item.Name AS, COALESCE(SUM(CASE WHEN
+MONTH(OrderDate)=10 THEN transactionitem.Quantity END),0) AS
+'October', COALESCE(SUM(CASE WHEN MONTH(OrderDate)=11 THEN
+transactionitem.Quantity END),0) AS 'November',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=12 THEN
+transactionitem.Quantity END),0) AS 'December'
+FROM ((item INNER JOIN transactionitem ON
+item.Id=transactionitem.Item_Id) INNER JOIN transaction ON
+transaction.Id=transactionitem.Transaction_Id)
+GROUP BY item.Name
+UNION
+SELECT 'T O T A L', COALESCE(SUM(CASE WHEN MONTH(OrderDate)=10
+THEN transactionitem.Quantity END),0) AS 'October',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=11 THEN
+transactionitem.Quantity END),0) AS 'November',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=12 THEN
+transactionitem.Quantity END),0) AS 'December'
+FROM ((item INNER JOIN transactionitem ON
+item.Id=transactionitem.Item_Id) INNER JOIN transaction ON
+transaction.Id=transactionitem.Transaction_Id)
+
+
+SELECT item.Name AS 'Name', COALESCE(SUM(CASE WHEN
+MONTH(OrderDate)=10 THEN transactionitem.Quantity END),0) AS
+'October', COALESCE(SUM(CASE WHEN MONTH(OrderDate)=11 THEN
+transactionitem.Quantity END),0) AS 'November',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=12 THEN
+transactionitem.Quantity END),0) AS 'December'
+FROM ((item INNER JOIN transactionitem ON
+item.Id=transactionitem.Item_Id) INNER JOIN transaction ON
+transaction.Id=transactionitem.Transaction_Id)
+GROUP BY item.Name
+UNION
+SELECT 'T O T A L', COALESCE(SUM(CASE WHEN MONTH(OrderDate)=10
+THEN transactionitem.Quantity END),0) AS 'October',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=11 THEN
+transactionitem.Quantity END),0) AS 'November',
+COALESCE(SUM(CASE WHEN MONTH(OrderDate)=12 THEN
+transactionitem.Quantity END),0) AS 'December'
+FROM ((item INNER JOIN transactionitem ON
+item.Id=transactionitem.Item_Id) INNER JOIN transaction ON
+transaction.Id=transactionitem.Transaction_Id)
