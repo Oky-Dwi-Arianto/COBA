@@ -96,3 +96,6 @@ transactionitem.Quantity END),0) AS 'December'
 FROM ((item INNER JOIN transactionitem ON
 item.Id=transactionitem.Item_Id) INNER JOIN transaction ON
 transaction.Id=transactionitem.Transaction_Id)
+
+
+a
